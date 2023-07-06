@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { addRecipe } from "../RecipeReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,8 @@ const Create = () => {
     const recipes = useSelector((state) => state.recipes);
     const dispatch = useDispatch();
 
-    const navigate = useNavigate();
+    const navigate = useNavigate();        
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

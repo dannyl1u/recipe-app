@@ -1,68 +1,57 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Sample initial data
-const recipeList = [];
+// Define the async thunk for fetching recipes from the API
+export const fetchRecipes = createAsyncThunk("recipes/fetchRecipes", async () => {
+  const response = await axios.get("/api/recipes"); // Replace "/api/recipes" with the actual API endpoint to fetch recipes
+  return response.data;
+});
+
+// Define the async thunk for creating a recipe
+export const addRecipe = createAsyncThunk("recipes/addRecipe", async (recipe) => {
+  const response = await axios.post("/api/recipes", recipe); // Replace "/api/recipes" with the actual API endpoint to create a recipe
+  return response.data;
+});
+
+// Define the async thunk for updating a recipe
+export const updateRecipe = createAsyncThunk("recipes/updateRecipe", async (recipe) => {
+  const { id, ...updatedRecipe } = recipe;
+  const response = await axios.put(`/api/recipes/${id}`, updatedRecipe); // Replace "/api/recipes" with the actual API endpoint to update a recipe
+  return response.data;
+});
+
+// Define the async thunk for deleting a recipe
+export const deleteRecipe = createAsyncThunk("recipes/deleteRecipe", async (id) => {
+  await axios.delete(`/api/recipes/${id}`); // Replace "/api/recipes" with the actual API endpoint to delete a recipe
+  return id;
+});
 
 const recipeSlice = createSlice({
   name: "recipes",
-  initialState: recipeList,
-  reducers: {
-    addRecipe: (state, action) => {
+  initialState: [],
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchRecipes.fulfilled, (state, action) => {
+      return action.payload;
+    });
+    builder.addCase(addRecipe.fulfilled, (state, action) => {
       state.push(action.payload);
-    },
-    updateRecipe: (state, action) => {
-      const { id, name, ingredients, directions } = action.payload;
-      const existingRecipe = state.find((recipe) => recipe.id === id);
-      if (existingRecipe) {
-        existingRecipe.name = name;
-        existingRecipe.ingredients = ingredients;
-        existingRecipe.directions = directions;
-        existingRecipe.dateModified = new Date().toLocaleString();
-      }
-    },
-    deleteRecipe: (state, action) => {
+    });
+    builder.addCase(updateRecipe.fulfilled, (state, action) => {
       const { id } = action.payload;
+      const existingRecipeIndex = state.findIndex((recipe) => recipe.id === id);
+      if (existingRecipeIndex !== -1) {
+        state[existingRecipeIndex] = action.payload;
+      }
+    });
+    builder.addCase(deleteRecipe.fulfilled, (state, action) => {
+      const id = action.payload;
       return state.filter((recipe) => recipe.id !== id);
-    },
+    });
   },
 });
 
-export const { addRecipe, updateRecipe, deleteRecipe } = recipeSlice.actions;
-
-// Action creators with API calls
-export const addRecipeAsync = (recipeData) => {
-  return async (dispatch) => {
-    try {
-      const response = await axios.post("your-api-url", recipeData);
-      dispatch(addRecipe(response.data));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-};
-
-export const updateRecipeAsync = (recipeData) => {
-  return async (dispatch) => {
-    try {
-      const { id, name, ingredients, directions } = recipeData;
-      await axios.put(`your-api-url/${id}`, { name, ingredients, directions });
-      dispatch(updateRecipe(recipeData));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-};
-
-export const deleteRecipeAsync = (recipeId) => {
-  return async (dispatch) => {
-    try {
-      await axios.delete(`your-api-url/${recipeId}`);
-      dispatch(deleteRecipe({ id: recipeId }));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-};
-
 export default recipeSlice.reducer;
+
+// Export the async thunks for external usage
+// export { fetchRecipes, createRecipe, updateRecipe, deleteRecipe };
