@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { deleteRecipe } from '../RecipeReducer';
 import { useDispatch } from "react-redux";
+import { fetchRecipes } from '../RecipeReducer';
 
 function Home() {
     const recipes = useSelector((state) => state.recipes);
@@ -11,6 +12,10 @@ function Home() {
     const handleDelete = (id) => {
         dispatch(deleteRecipe({id}));
     }
+
+    useEffect(() => {
+        dispatch(fetchRecipes());
+    }, [dispatch]);
 
   return (
     <div className='container'>
@@ -29,7 +34,7 @@ function Home() {
             <tbody>
                 {recipes.map((recipe, index) => (
                     <tr key={index}>
-                        <td>{recipe.id}</td>
+                        <td>{recipe._id}</td>
                         <td>{recipe.name}</td>
                         <td>{recipe.ingredients}</td>
                         <td>{recipe.directions}</td>

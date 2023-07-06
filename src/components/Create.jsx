@@ -18,11 +18,9 @@ const Create = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setDateModified(new Date().toLocaleString());
-        const newRecipeId = recipes.length > 0 ? recipes[recipes.length - 1].id + 1 : 1;
       
         dispatch(
           addRecipe({
-            id: newRecipeId,
             name,
             ingredients,
             directions,

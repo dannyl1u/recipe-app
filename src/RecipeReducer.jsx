@@ -3,27 +3,24 @@ import axios from "axios";
 
 // Define the async thunk for fetching recipes from the API
 export const fetchRecipes = createAsyncThunk("recipes/fetchRecipes", async () => {
-  const response = await axios.get("/api/recipes"); // Replace "/api/recipes" with the actual API endpoint to fetch recipes
+  const response = await axios.get("http://localhost:5000/api/recipes/"); // Replace "/api/recipes" with the actual API endpoint to fetch recipes
   return response.data;
 });
 
-// Define the async thunk for creating a recipe
-export const addRecipe = createAsyncThunk("recipes/addRecipe", async (recipe) => {
-  const response = await axios.post("/api/recipes", recipe); // Replace "/api/recipes" with the actual API endpoint to create a recipe
-  return response.data;
+export const addRecipe = createAsyncThunk("recipes/createRecipe", async (recipe) => {
+  const response = await axios.post("http://localhost:5000/api/recipes/", recipe);
+  return response.data; 
 });
 
-// Define the async thunk for updating a recipe
 export const updateRecipe = createAsyncThunk("recipes/updateRecipe", async (recipe) => {
-  const { id, ...updatedRecipe } = recipe;
-  const response = await axios.put(`/api/recipes/${id}`, updatedRecipe); // Replace "/api/recipes" with the actual API endpoint to update a recipe
-  return response.data;
+  const { _id, ...updatedRecipe } = recipe;
+  const response = await axios.put(`http://localhost:5000/api/recipes/${_id}`, updatedRecipe);
+  return response.data; 
 });
 
-// Define the async thunk for deleting a recipe
-export const deleteRecipe = createAsyncThunk("recipes/deleteRecipe", async (id) => {
-  await axios.delete(`/api/recipes/${id}`); // Replace "/api/recipes" with the actual API endpoint to delete a recipe
-  return id;
+export const deleteRecipe = createAsyncThunk("recipes/deleteRecipe", async (_id) => {
+  const response = await axios.delete(`http://localhost:5000/api/recipes/${_id}`);
+  return response.data;
 });
 
 const recipeSlice = createSlice({
@@ -38,20 +35,17 @@ const recipeSlice = createSlice({
       state.push(action.payload);
     });
     builder.addCase(updateRecipe.fulfilled, (state, action) => {
-      const { id } = action.payload;
-      const existingRecipeIndex = state.findIndex((recipe) => recipe.id === id);
+      const { _id } = action.payload;
+      const existingRecipeIndex = state.findIndex((recipe) => recipe._id === _id);
       if (existingRecipeIndex !== -1) {
         state[existingRecipeIndex] = action.payload;
       }
     });
     builder.addCase(deleteRecipe.fulfilled, (state, action) => {
-      const id = action.payload;
-      return state.filter((recipe) => recipe.id !== id);
+      const _id = action.payload;
+      return state.filter((recipe) => recipe._id !== _id);
     });
   },
 });
 
 export default recipeSlice.reducer;
-
-// Export the async thunks for external usage
-// export { fetchRecipes, createRecipe, updateRecipe, deleteRecipe };

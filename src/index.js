@@ -7,8 +7,6 @@ import { Provider } from 'react-redux';
 import { configureStore, applyMiddleware } from '@reduxjs/toolkit';
 import RecipeReducer from './RecipeReducer';
 import 'bootstrap/dist/css/bootstrap.css';
-import thunk from 'redux-thunk';
-
 
 const store = configureStore({
   reducer: {

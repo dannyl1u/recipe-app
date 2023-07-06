@@ -5,8 +5,11 @@ import { updateRecipe } from "../RecipeReducer";
 
 const Update = () => {
     const {id} = useParams();
+    console.log(id);
     const recipes = useSelector((state) => state.recipes);
-    const existingRecipes = recipes.filter(f => f.id == id);
+    console.log(recipes);
+    const existingRecipes = recipes.filter(f => f._id == id);
+    console.log(existingRecipes);
     const {name, ingredients, directions} = existingRecipes[0];
 
     const [newName, setName] = useState(name);
