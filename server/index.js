@@ -20,22 +20,6 @@ const Recipe = mongoose.model('Recipe', RecipeSchema);
 app.use(cors());
 app.use(express.json());
 
-// Connect to the MongoDB cluster
-const connectDb = async () => {
-  try {
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.log("Error connecting to MongoDB:", err);
-    process.exit(1);
-  }
-};
-
-connectDb();
-
 // POST api/recipes - Create a new recipe
 app.post('/api/recipes', async (req, res) => {
   const newRecipe = new Recipe(req.body);
@@ -65,7 +49,23 @@ app.delete('/api/recipes/:id', async (req, res) => {
 // Define port
 const PORT = process.env.PORT || 5000;
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Connect to the MongoDB cluster and start the server
+const startServer = async () => {
+  try {
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB");
+
+    // Start the server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.log("Error connecting to MongoDB:", err);
+    process.exit(1);
+  }
+};
+
+startServer();

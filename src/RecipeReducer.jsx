@@ -23,29 +23,42 @@ export const deleteRecipe = createAsyncThunk("recipes/deleteRecipe", async (_id)
   return response.data;
 });
 
+const initialState = {
+  list: [],
+  selected: null
+};
+
 const recipeSlice = createSlice({
   name: "recipes",
-  initialState: [],
-  reducers: {},
+  initialState: initialState,
+  reducers: {
+    setSelectedRecipe: (state, action) => {
+      state.selected = action.payload;
+    },
+    clearSelectedRecipe: (state) => {
+      state.selected = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchRecipes.fulfilled, (state, action) => {
-      return action.payload;
+      state.list = action.payload;
     });
     builder.addCase(addRecipe.fulfilled, (state, action) => {
-      state.push(action.payload);
+      state.list.push(action.payload);
     });
     builder.addCase(updateRecipe.fulfilled, (state, action) => {
       const { _id } = action.payload;
-      const existingRecipeIndex = state.findIndex((recipe) => recipe._id === _id);
+      const existingRecipeIndex = state.list.findIndex((recipe) => recipe._id === _id);
       if (existingRecipeIndex !== -1) {
-        state[existingRecipeIndex] = action.payload;
+        state.list[existingRecipeIndex] = action.payload;
       }
     });
     builder.addCase(deleteRecipe.fulfilled, (state, action) => {
       const _id = action.payload;
-      return state.filter((recipe) => recipe._id !== _id);
+      state.list = state.list.filter((recipe) => recipe._id !== _id);
     });
   },
 });
 
+export const { setSelectedRecipe, clearSelectedRecipe } = recipeSlice.actions;
 export default recipeSlice.reducer;
