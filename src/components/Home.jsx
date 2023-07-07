@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
@@ -8,11 +8,12 @@ import {
 } from "../RecipeReducer";
 import { useDispatch } from "react-redux";
 import { formatDistanceToNow } from 'date-fns';
-
+import { FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
 
 function Home() {
   const recipes = useSelector((state) => state.recipes.list) || [];
   const dispatch = useDispatch();
+  const [expandedRows, setExpandedRows] = useState(new Set());
 
   const handleDelete = (id) => {
     dispatch(deleteRecipe(id)).then(() => {
@@ -24,55 +25,92 @@ function Home() {
     dispatch(setSelectedRecipe(recipe));
   };
 
+  const handleRowClick = (id) => {
+    const newExpandedRows = new Set(expandedRows);
+    if (expandedRows.has(id)) {
+      newExpandedRows.delete(id);
+    } else {
+      newExpandedRows.add(id);
+    }
+    setExpandedRows(newExpandedRows);
+  };
+
   useEffect(() => {
     dispatch(fetchRecipes());
   }, [dispatch]);
 
   return (
     <div className="container">
-      <Link to="/create" className="btn btn-primary my-3">
-        Create
+      <Link to="/create" className="btn btn-outline-dark my-3">
+        <FaPlus /> Create
       </Link>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Ingredients</th>
-            <th>Directions</th>
-            <th>Last modified</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recipes.map((recipe, index) => (
-            <tr key={index}>
-              <td>{recipe.name}</td>
-              <td>{recipe.ingredients}</td>
-              <td>{recipe.directions}</td>
-              <td>{formatDistanceToNow(new Date(recipe.dateModified), { addSuffix: true })}</td>
-              <td>
-                <div>
-                  <Link
-                    to={`/edit/${recipe._id}`}
-                    onClick={() => handleEdit(recipe)}
-                    className="btn btn-primary m-1"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    className="btn btn-danger m-1"
-                    onClick={() => {
-                      handleDelete(recipe._id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
+      {recipes.length === 0 ? (
+        <h3>No recipes yet. Create your first recipe!</h3>
+      ) : (
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th className="text-left">Name</th>
+              <th className="text-left">Last modified</th>
+              <th className="text-left">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {recipes.map((recipe, index) => (
+              <React.Fragment key={index}>
+                <tr onClick={() => handleRowClick(recipe._id)}>
+                  <td className="text-left">{recipe.name}</td>
+                  <td className="text-left">{formatDistanceToNow(new Date(recipe.dateModified), { addSuffix: true })}</td>
+                  <td className="text-left">
+                    <Link
+                      to={`/edit/${recipe._id}`}
+                      onClick={(e) => { e.stopPropagation(); handleEdit(recipe); }}
+                      className="btn btn-outline-dark m-1"
+                      title="Edit Recipe"
+                    >
+                      <FaEdit />
+                    </Link>
+                    <button
+                      className="btn btn-outline-dark m-1"
+                      onClick={(e) => { e.stopPropagation(); handleDelete(recipe._id); }}
+                      title="Delete Recipe"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </td>
+                </tr>
+                {expandedRows.has(recipe._id) && (
+                  <tr>
+                    <td colSpan="3">
+                      <p><strong>Ingredients:</strong>
+                          <div>
+                              <textarea 
+                                  style={{backgroundColor: '#f8f9fa', border: 'none'}}
+                                  className="form-control"
+                                  value={recipe.ingredients}
+                                  rows={recipe.ingredients.split('\n').length}
+                                  readOnly
+                              ></textarea> 
+                          </div>
+                      </p>
+                      <p>
+                          <strong>Directions:</strong> 
+                              <textarea 
+                                  style={{backgroundColor: '#f8f9fa', border: 'none'}}
+                                  className="form-control"
+                                  value={recipe.directions}
+                                  rows={recipe.directions.split('\n').length}
+                                  readOnly
+                              ></textarea> 
+                          </p>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
