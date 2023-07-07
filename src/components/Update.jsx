@@ -6,7 +6,6 @@ import { clearSelectedRecipe, updateRecipe } from "../RecipeReducer";
 import { FaEdit } from "react-icons/fa";
 
 const Update = () => {
-  const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const recipe = useSelector((state) => state.recipes.selected);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,27 +55,30 @@ const Update = () => {
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setName(e.target.value)}
             value={newName}
+            required
           />
         </div>
         <div className="form-group">
           <label htmlFor="ingredients">Ingredients</label>
           <textarea
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setIngredients(e.target.value)}
             value={newIngredients}
+            required
           />
         </div>
         <div className="form-group">
           <label htmlFor="directions">Directions</label>
           <textarea
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setDirections(e.target.value)}
             value={newDirections}
+            required
           />
         </div>
         <br />

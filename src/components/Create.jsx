@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 
 const Create = () => {
-  const isDarkMode = useSelector((state) => state.darkMode.isDarkMode);
   const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [directions, setDirections] = useState("");
@@ -39,24 +38,27 @@ const Create = () => {
           <label htmlFor="name">Name</label>
           <input
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
         <div className="form-group">
           <label htmlFor="ingredients">Ingredients</label>
           <textarea
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setIngredients(e.target.value)}
+            required
           />
         </div>
         <div className="form-group">
           <label htmlFor="ingredients">Directions</label>
           <textarea
             type="text"
-            className={`form-control rounded ${isDarkMode ? "bg-dark text-light" : ""}`}
+            className={`form-control rounded text-light"}`}
             onChange={(e) => setDirections(e.target.value)}
+            required
           />
         </div>
         <br />

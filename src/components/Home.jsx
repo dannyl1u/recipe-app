@@ -45,14 +45,14 @@ function Home() {
         <FaPlus /> Create
       </Link>
       {recipes.length === 0 ? (
-        <h3>No recipes yet. Create your first recipe!</h3>
+        <p>No recipes to show, <Link to="/create">create your first one</Link></p>
       ) : (
         <table className="table table-hover">
           <thead>
             <tr>
               <th className="text-left">Name</th>
               <th className="text-left">Last modified</th>
-              <th className="text-left">Actions</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -61,7 +61,7 @@ function Home() {
                 <tr onClick={() => handleRowClick(recipe._id)}>
                   <td className="text-left">{recipe.name}</td>
                   <td className="text-left">{formatDistanceToNow(new Date(recipe.dateModified), { addSuffix: true })}</td>
-                  <td className="text-left">
+                  <td className="text-center">
                     <Link
                       to={`/edit/${recipe._id}`}
                       onClick={(e) => { e.stopPropagation(); handleEdit(recipe); }}
