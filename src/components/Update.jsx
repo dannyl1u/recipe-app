@@ -11,6 +11,7 @@ const Update = () => {
   const [newName, setName] = useState("");
   const [newIngredients, setIngredients] = useState("");
   const [newDirections, setDirections] = useState("");
+  const [newDateModified, setNewDateModified] = useState(new Date().toLocaleString());
 
   useEffect(() => {
     if (recipe) {
@@ -24,7 +25,8 @@ const Update = () => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    dispatch(updateRecipe({ _id: recipe._id, name: newName, ingredients: newIngredients, directions: newDirections }));
+    setNewDateModified(new Date().toLocaleString());
+    dispatch(updateRecipe({ _id: recipe._id, name: newName, ingredients: newIngredients, directions: newDirections, dateModified: newDateModified }));
     dispatch(clearSelectedRecipe()); // Clear selected recipe after update.
     navigate('/');
   }
@@ -57,7 +59,8 @@ const Update = () => {
                     value={newDirections} />
                 </div>
                 <br/>
-                <button className='btn btn-primary'>Update</button>
+                <button className='btn btn-primary m-1'>Update</button>
+                <button className='btn btn-outline-dark m-1' onClick={() => navigate('/')}>Cancel</button>
             </form>
         </div>
     </div>

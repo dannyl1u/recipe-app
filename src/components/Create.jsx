@@ -52,7 +52,12 @@ const Create = () => {
                     onChange={e => setDirections(e.target.value)} />
                 </div>
                 <br/>
-                <button className='btn btn-primary'>Add</button>
+                <div>
+                  <button className='btn btn-primary'>Add</button>
+                </div>
+                <div className='mt-3'>
+                  <button className='btn btn-outline-dark' onClick={() => navigate('/')}>Cancel</button>
+                </div>
             </form>
         </div>
     </div>
