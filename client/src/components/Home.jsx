@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  deleteRecipe,
-  fetchRecipes,
-  setSelectedRecipe,
-} from "../RecipeReducer";
+import { deleteRecipe, fetchRecipes, setSelectedRecipe } from "../RecipeReducer";
 import { useDispatch } from "react-redux";
 import { formatDistanceToNow } from 'date-fns';
 import { FaEdit, FaTrashAlt, FaPlus } from "react-icons/fa";
@@ -39,12 +35,19 @@ function Home() {
     dispatch(fetchRecipes());
   }, [dispatch]);
 
+  // Sort recipes by dateModified in descending order
+  const sortedRecipes = [...recipes].sort((a, b) => {
+    const dateA = new Date(a.dateModified);
+    const dateB = new Date(b.dateModified);
+    return dateB - dateA;
+  });
+
   return (
     <div className="container">
       <Link to="/create" className="btn btn-outline-dark my-3">
         <FaPlus /> Create
       </Link>
-      {recipes.length === 0 ? (
+      {sortedRecipes.length === 0 ? (
         <p>No recipes to show, <Link to="/create">create your first one</Link></p>
       ) : (
         <table className="table table-hover">
@@ -56,7 +59,7 @@ function Home() {
             </tr>
           </thead>
           <tbody>
-            {recipes.map((recipe, index) => (
+            {sortedRecipes.map((recipe, index) => (
               <React.Fragment key={index}>
                 <tr onClick={() => handleRowClick(recipe._id)}>
                   <td className="text-left">{recipe.name}</td>
@@ -83,26 +86,26 @@ function Home() {
                   <tr>
                     <td colSpan="3">
                       <p><strong>Ingredients:</strong>
-                          <div>
-                              <textarea 
-                                  style={{backgroundColor: '#f8f9fa', border: 'none'}}
-                                  className="form-control"
-                                  value={recipe.ingredients}
-                                  rows={recipe.ingredients.split('\n').length}
-                                  readOnly
-                              ></textarea> 
-                          </div>
+                        <div>
+                          <textarea
+                            style={{ backgroundColor: '#f8f9fa', border: 'none' }}
+                            className="form-control"
+                            value={recipe.ingredients}
+                            rows={recipe.ingredients.split('\n').length}
+                            readOnly
+                          ></textarea>
+                        </div>
                       </p>
                       <p>
-                          <strong>Directions:</strong> 
-                              <textarea 
-                                  style={{backgroundColor: '#f8f9fa', border: 'none'}}
-                                  className="form-control"
-                                  value={recipe.directions}
-                                  rows={recipe.directions.split('\n').length}
-                                  readOnly
-                              ></textarea> 
-                          </p>
+                        <strong>Directions:</strong>
+                        <textarea
+                          style={{ backgroundColor: '#f8f9fa', border: 'none' }}
+                          className="form-control"
+                          value={recipe.directions}
+                          rows={recipe.directions.split('\n').length}
+                          readOnly
+                        ></textarea>
+                      </p>
                     </td>
                   </tr>
                 )}

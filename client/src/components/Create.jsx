@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { addRecipe } from "../RecipeReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 
@@ -10,7 +10,6 @@ const Create = () => {
   const [directions, setDirections] = useState("");
   const [dateModified, setDateModified] = useState(new Date().toLocaleString());
 
-  const recipes = useSelector((state) => state.recipes);
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -65,6 +64,9 @@ const Create = () => {
         <div>
           <button className="btn btn-outline-dark">
             <FaPlus /> Add
+          </button>
+          <button className="btn btn-outline-dark m-2" onClick={() => navigate("/")}>
+            Cancel
           </button>
         </div>
       </form>
