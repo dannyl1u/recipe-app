@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
-const connectionString = "mongodb://localhost:27017/recipes";
+const connectionString = process.env.DB_URL
+
+console.log('Connecting to MongoDB:', connectionString);
 
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

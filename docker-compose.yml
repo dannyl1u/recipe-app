@@ -1,18 +1,29 @@
 version: '3'
 services:
-  server:
-    build: ./server
-    ports:
-      - 5000:5000
-    depends_on:
-      - database
   client:
-    build: ./client
+    image: dannyjialiliu/recipe-app-react
     ports:
-      - 3000:3000
+      - "3000:3000"
     depends_on:
       - server
-  database:
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+  
+  server:
+    image: dannyjialiliu/recipe-app-node
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - DB_URL=mongodb://mongo:27017/recipe-app
+
+  mongo:
     image: mongo
+    volumes:
+      - .mongo_data:/data/db
     ports:
       - 27017:27017
+
+volumes:
+  mongo_data:

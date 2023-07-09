@@ -3,23 +3,23 @@ import axios from "axios";
 
 // Define the async thunk for fetching recipes from the API
 export const fetchRecipes = createAsyncThunk("recipes/fetchRecipes", async () => {
-  const response = await axios.get("http://localhost:5000/api/recipes/"); // Replace "/api/recipes" with the actual API endpoint to fetch recipes
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/recipes/`);
   return response.data;
 });
 
 export const addRecipe = createAsyncThunk("recipes/createRecipe", async (recipe) => {
-  const response = await axios.post("http://localhost:5000/api/recipes/", recipe);
+  const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/recipes/`, recipe);
   return response.data; 
 });
 
 export const updateRecipe = createAsyncThunk("recipes/updateRecipe", async (recipe) => {
   const { _id, ...updatedRecipe } = recipe;
-  const response = await axios.put(`http://localhost:5000/api/recipes/${_id}`, updatedRecipe);
+  const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/recipes/${_id}`, updatedRecipe);
   return response.data; 
 });
 
 export const deleteRecipe = createAsyncThunk("recipes/deleteRecipe", async (_id) => {
-  const response = await axios.delete(`http://localhost:5000/api/recipes/${_id}`);
+  const response = await axios.delete(`${process.env.REACT_APP_API_URL}/api/recipes/${_id}`);
   return response.data;
 });
 
