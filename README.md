@@ -1,5 +1,5 @@
 # recipe-app
-full-stack recipe crud app using react, redux, nodejs, express, mongodb, docker
+full-stack recipe crud app using react, redux, nodejs, express, mongodb, docker, bootstrap
 
 ## Prerequisites
 Docker
